@@ -1,0 +1,130 @@
+#!/bin/bash
+# The script downloads the song from YouTube using youtube-dl command line utitlity.
+# First, it downloads videos specified on a csv list (for videos that cannnot be uploaded to a YT playtlist)
+# For media marked "private" it will copy the media to the private directory
+# For media marker "public" it will copy the media to the public directory
+# to correct the metadata. Post that, it calls mp3info to display the ID3 tag information as well as prompts the user whether they want to play the song.
+
+#############################################
+# Helper functions used for downloading the video and audio as appropriate 
+#############################################
+Download_Audio_Playlist_from_YT_to_PrivateList() { 
+youtube-dl --download-archive ~/Dropbox/MediaFileFolder/MusicAndPlaylists/Playlists/$1/downloaded.txt --no-post-overwrites -ciwx --audio-format mp3 --yes-playlist -o "~/Dropbox/MediaFileFolder/MusicAndPlaylists/Playlists/$1/%(title)s.%(ext)s" $2
+}
+Download_Video_Playlist_from_YT_to_PrivateList() { 
+youtube-dl --download-archive ~/Dropbox/MediaFileFolder/MusicAndPlaylists/Playlists/$1/downloaded.txt --no-post-overwrites -ciwx -f mp4 --yes-playlist -o "~/Dropbox/MediaFileFolder/MusicAndPlaylists/Playlists/$1/%(title)s.%(ext)s" $2
+}
+Download_Audio_Playlist_from_YT_to_PublicList() { 
+youtube-dl --download-archive ~/Dropbox/BloggingFileFolder/Media/Audio/$1/downloaded.txt --no-post-overwrites -ciwx -f mp4 --yes-playlist -o "~/Dropbox/MediaFileFolder/MusicAndPlaylists/Playlists/$1/%(title)s.%(ext)s" $2
+}
+Download_Video_Playlist_from_YT_to_PublicList() { 
+youtube-dl --download-archive ~/Dropbox/BloggingFileFolder/Media/Video/$1/downloaded.txt --no-post-overwrites -ciwx -f mp4 --yes-playlist -o "~/Dropbox/MediaFileFolder/MusicAndPlaylists/Playlists/$1/%(title)s.%(ext)s" $2
+}
+Download_Video_Single_from_YT_to_PublicList() { 
+  	youtube-dl --download-archive "~/Dropbox/MediaFileFolder/MusicAndPlaylists/Playlists/$1/downloaded.txt" --no-post-overwrites -ciwx -f mp4 -o "~/Dropbox/MediaFileFolder/MusicAndPlaylists/Playlists/$1/%(title)s.%(ext)s" $2
+}
+Download_Video_Single_from_YT_to_PrivateList() { 
+  	youtube-dl --download-archive "~/Dropbox/MediaFileFolder/MusicAndPlaylists/Playlists/$1/downloaded.txt" --no-post-overwrites -ciwx -f mp4 -o "~/Dropbox/MediaFileFolder/MusicAndPlaylists/Playlists/$1/%(title)s.%(ext)s" $2
+}
+Download_Audio_Single_from_YT_to_PublicList() { 
+  	youtube-dl --download-archive "~/Dropbox/MediaFileFolder/MusicAndPlaylists/Playlists/$1/downloaded.txt" --no-post-overwrites -ciwx -f mp4 -o "~/Dropbox/MediaFileFolder/MusicAndPlaylists/Playlists/$1/%(title)s.%(ext)s" $2
+}
+Download_Audio_Single_from_YT_to_PrivateList() { 
+  	youtube-dl --download-archive "~/Dropbox/MediaFileFolder/MusicAndPlaylists/Playlists/$1/downloaded.txt" --no-post-overwrites -ciwx -f mp4 -o "~/Dropbox/MediaFileFolder/MusicAndPlaylists/Playlists/$1/%(title)s.%(ext)s" $2
+}
+
+#############################################
+# make sure that our youtub-downloader is updated
+#############################################
+pip3 install --upgrade youtube-dl
+
+#############################################
+# Download the playlists for the audio 
+#############################################
+echo "beginning download of private and public audio PLAYLISTS..."
+count=0
+while IFS=, read -r playlist dir_save target ; do
+
+	# download the videos from playlist #
+   	echo "$playlist" 
+	echo $target
+
+	# check to see if this is public or private lists #
+	if [ $target == 'public' ] 
+	then
+		Download_Audio_Playlist_from_YT_to_PublicList $dir_save $playlist
+	elif [ $target == 'private' ]
+	then
+		Download_Audio_Playlist_from_YT_to_PrivateList $dir_save $playlist
+	fi
+
+	# download_video_playlist_from_yt $playlist  $dir_save #
+	Download_Audio_Playlist_from_YT_to_Private_List $dir_save $playlist
+
+	# rename the files in the target directory #
+	for x in ~/Dropbox/MediaFileFolder/MusicAndPlaylists/Playlists/$dir_save/*.mp3; do 
+   		name="${x##*/}" 
+   		name_nsuf="${name%.*}"
+   		let it=it+1
+   		mp3info -a "$dir_save" -n "$it" -l "$dir_save" -t "$name_nsuf" "$x"
+	done
+
+	# recode relative to the number of errors #
+  	[[ "$code" == *","* ]] && echo "$name $code" && ((++count))
+done < "script_settings/audio_playlists_to_download.csv"; \
+
+#output text indicating we are complete with  download 
+echo "....downloading audio mp3s to public and  private list completed"
+
+################################################
+# Download the playlists for the video 
+###############################################
+echo "beginning download of private and public video PLAYLISTS..."
+count=0
+while IFS=, read -r playlist dir_save target ; do
+	# download the videos from playlist #
+   	echo "$playlist" 
+
+	# check to see if this is public or private lists #
+	if [ $target == 'public' ] 
+	then
+		Download_Video_Playlist_from_YT_to_PublicList $dir_save $playlist
+	elif [ $target == 'private' ]
+	then
+		Download_Video_Playlist_from_YT_to_PrivateList $dir_save $playlist
+	fi
+
+	# download_video_playlist_from_yt $playlist  $dir_save #
+	Download_Audio_Playlist_from_YT_to_Private_List $dir_save $playlist
+
+	# recode relative to the number of errors #
+  	[[ "$code" == *","* ]] && echo "$name $code" && ((++count))
+done < "script_settings/video_playlists_to_download.csv"; \
+
+#output text indicating we are complete with  download 
+echo "....downloading video mp4s to public and private list completed"
+
+################################################
+# Download the manual lists for the video 
+###############################################
+echo "beginning download of private and public video manually created lists..."
+
+count=0
+while IFS=, read -r url dir_save target; do
+  	youtube-dl --download-archive "~/Dropbox/MediaFileFolder/MusicAndPlaylists/Playlists/$dir_save/downloaded.txt" --no-post-overwrites -ciwx -f mp4 -o "~/Dropbox/MediaFileFolder/MusicAndPlaylists/Playlists/$dir_save/%(title)s.%(ext)s" $url
+  
+  [[ "$code" == *","* ]] && echo "$name $code" && ((++count))
+done < $1; \
+
+################################################
+# Download the manual lists for the video 
+###############################################
+echo "beginning download of private and public video manually created lists..."
+
+count=0
+while IFS=, read -r url dir_save target; do
+  	youtube-dl --download-archive "~/Dropbox/MediaFileFolder/MusicAndPlaylists/Playlists/$dir_save/downloaded.txt" --no-post-overwrites -ciwx -f mp4 -o "~/Dropbox/MediaFileFolder/MusicAndPlaylists/Playlists/$dir_save/%(title)s.%(ext)s" $url
+  
+  [[ "$code" == *","* ]] && echo "$name $code" && ((++count))
+done < $1; \
+

@@ -1,0 +1,7 @@
+#!/bin/bash
+# declare STRING variable
+STRING_TWO=$(date)
+STRING=$'Full System Sync Completed...' 
+#print variable on a screen
+echo $STRING
+echo $STRING_TWO

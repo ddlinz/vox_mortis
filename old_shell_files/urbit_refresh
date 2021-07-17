@@ -1,0 +1,8 @@
+mkdir temp
+cd temp
+curl -O https://bootstrap.urbit.org/urbit-linux64-v0.9.2.tgz
+tar xzf urbit-linux64-v0.9.2.tgz
+rm urbit-linux64-v0.9.2.tgz
+cd ..
+mv temp/* ./
+rm -rf temp

@@ -1,0 +1,20 @@
+#!/bin/bash
+
+
+copy_YTaudio_to_directory() { 
+	youtube-dl --download-archive "~/Dropbox/MediaFileFolder/MusicAndPlaylists/Playlists/$1/downloaded.txt" --no-post-overwrites -ciwx --audio-format mp3 --yes-playlist -o "~/Dropbox/MediaFileFolder/MusicAndPlaylists/Playlists/$1/%(title)s.%(ext)s" $2
+	it = 0  #
+
+	# re-label all videos in the source directory based on a common set of rules
+	for x in "~/Dropbox/MediaFileFolder/MusicAndPlaylists/Playlists/$1/*.mp3"; do 
+   		name="${x##*/}" 
+   		name_nsuf="${name%.*}"
+   		let it=it+1
+   		mp3info -a "$1" -n $it -l "$1" -t "$name_nsuf" "$x"
+	done
+}
+
+DIRECTORY_LIST=YT_game_mix
+PLAYLIST_INPUT=PLRbcQXWEJAJpUF_9RyWCgnoGe2QJmwU2_
+
+copy_YTaudio_to_directory $DIRECTORY_LIST $PLAYLIST_INPUT

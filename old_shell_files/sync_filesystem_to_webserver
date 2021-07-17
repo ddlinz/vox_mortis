@@ -1,0 +1,15 @@
+#!/bin/bash
+
+####################################################################################
+## quick script that writes all media inside of the folders ~/Dropbox/media
+## to the folder 
+###################################################################################
+
+rsync -avu --delete /home/dave/Dropbox/BloggingFileFolder/Media /var/www/html/Media/
+cp /home/dave/Dropbox/BloggingFileFolder/WebfilesBackup/index_update.html /var/www/html/index.html
+cp -r /home/dave/Dropbox/BloggingFileFolder/WebfilesBackup/images /var/www/html/
+
+####################################################################################
+# Script written by David Donovan                                                  #
+# December 2019                                                                    #
+####################################################################################
