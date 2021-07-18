@@ -5,29 +5,23 @@ import sys
 import os
 
 
-
+## a simpler logger for use in stopping exceptions from halting the operation of the download ##
 class MyLogger(object):
-
     def __init__(self):
         self._message_queue = []
-
     def debug(self, msg):
         print('[DEBUG]' + msg)
-
     def warning(self, msg):
         pass
-
     def error(self, msg):
         self._message_queue.append(msg)
         print(msg)
-
     def get_message(self):
         return None if not len(self._message_queue) else \
             self._message_queue.pop()
 
 
 class ArchiveDirectory:
-
     ###
     # initialization function 
     ###
@@ -39,6 +33,7 @@ class ArchiveDirectory:
         else: 
             self.archive_name = archive_name
 
+        ## ##
         if archive_name == "None" and archive_master_dir == "None":
                 self.full_save_directory =  "/home/dave/radio_directory/test/"
                 print('no directory specified, using default: ' + self.full_save_directory)
@@ -69,6 +64,7 @@ class ArchiveDirectory:
             'logger': loggr 
         }
 
+        ## ##
         self.downloader                          = yt.YoutubeDL(self.ydl_opts)
 
     #####
@@ -100,7 +96,6 @@ def main():
 
     playlist_url_input = "https://www.youtube.com/playlist?list=PLRbcQXWEJAJqngAmM0LdWJoehr9X6hdQH"
     dl_cmd.downloadPlayList(playlist_url=playlist_url_input)
-
 
     print('done with function')
     return 
