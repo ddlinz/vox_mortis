@@ -1,0 +1,22 @@
+version: "3"
+
+services:
+  servant:
+    container_name: vox-container #  pa4sexample-servant-container
+    image: vox:latest
+    deploy:
+      resources:
+        limits:
+          memory: 4G
+    environment:
+      SET_ENVIRONMENT: DEV
+    networks:
+      - vox-network
+    stdin_open: true
+    tty: true
+
+networks:
+  vox-network:
+    name: vox-network
+    driver: bridge
+    external: true
