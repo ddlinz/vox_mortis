@@ -16,3 +16,4 @@ WORKDIR /app
 
 COPY vox ./vox
 CMD ["python","-m","vox"]
+EXPOSE 5000
