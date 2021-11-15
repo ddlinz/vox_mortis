@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block head %} 
+<title> Vox Track Master </title>
+{% endblock %}
+
+{% block body %} 
+
+<div class="content">
+    <h1 style="text-align: center"> Track Master </h1>
+
+    <table>
+        <tr>
+            <th> Track </th>
+            <th> Added </th>
+            <th>  Actions </th>
+        </tr>
+        {% for track in tracks %}
+        <tr>
+            <td> {{ track.relative_path}} </td> 
+            <td> {{ track.date_created.date() }} </td> 
+            <td> 
+                <a href="/delete/{{track.id}}">Delete</a>
+                <br>
+                <a href="/update/{{track.id}}">Update</a>
+            </td> 
+        </tr>
+        {% endfor %}
+    </table>
+
+    <form actions="/" method="POST">
+        <input type="text" name="content" id="content">
+        <input type="submit" value="Add Track" >
+    </form>
+</div>
+
+{% endblock %}

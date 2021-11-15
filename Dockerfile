@@ -17,7 +17,7 @@ WORKDIR /app
 
 # copy over the conda settings 
 COPY vox_environment.yml ./vox_environment.yml
-RUN conda env create -f vox_environment.yml
+#RUN conda env create -f vox_environment.yml
 ##RUN conda init bash
 ##RUN echo "conda activate vox_environment" >> ~/.bashrc
 
