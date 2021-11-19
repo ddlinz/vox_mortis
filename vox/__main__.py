@@ -26,7 +26,10 @@ def init():
 
 
 if __name__ == "__main__":
-    p = multiprocessing.Process(target=vox.runner.f, args=("bob",))
-    p.start()
-    p.join()
-#     init()
+    # p = multiprocessing.Process(target=vox.runner.f, args=("bob",))
+    # p.start()
+    # p.join()
+    from .flask_app import db
+
+    db.create_all()
+    init()

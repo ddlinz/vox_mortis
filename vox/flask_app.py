@@ -6,9 +6,30 @@ import os
 
 
 app = Flask(__name__)
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///test.db"
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///vox.db"
 db = SQLAlchemy(app)
 db.create_all()
+
+
+# #
+class Playlist(db.Model):
+    __tablename__ = "playlist"
+    id = db.Column(db.Integer, primary_key=True)
+
+    def __repr__(self):
+        return "<Playlist %r>" % self.id
+
+
+# #
+class User(db.Model):
+    __tablename__ = "user"
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(50), nullable=False)
+    email = db.Column(db.String(50), nullable=False)
+
+    def __repr__(self):
+        return "<User %r>" % self.id
+
 
 # class representing the track #
 class TrackEntry(db.Model):
@@ -20,6 +41,12 @@ class TrackEntry(db.Model):
 
     def __repr__(self):
         return "<Track %r>" % self.id
+
+
+# class representing the playlist #
+class PlayListEntry(db.Model):
+    __tablename__ = "playlist_entry"
+    id = db.Column(db.Integer, primary_key=True)
 
 
 @app.route("/", methods=["POST", "GET"])
@@ -34,7 +61,7 @@ def index():
             db.session.add(new_track)
             db.session.commit()
             return redirect("/")
-        except:
+        except SystemExit:
             return "there was an issue adding the track"
 
     else:
@@ -52,7 +79,7 @@ def delete(id):
         db.session.delete(track_to_delete)
         db.session.commit()
         return redirect("/")
-    except:
+    except SystemExit:
         return "there was an issue with delete operation "
 
 
@@ -67,11 +94,18 @@ def update(id):
         try:
             db.session.commit()
             return redirect("/")
-        except:
+        except SystemExit:
             return "there was an issue updating the track information"
 
     else:
         return render_template("update.html", track=track)
+
+
+@app.route("/playlist/<int:id>", methods=["GET"])
+def getPlaylistContents(id):
+
+    if request.method == "GET":
+        return render_template("update.html", track=1)
 
 
 # the basic command to being the flask server #
