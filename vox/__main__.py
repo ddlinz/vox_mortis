@@ -1,35 +1,38 @@
-import time
-from datetime import datetime
-from flask import Flask, render_template, url_for
-from datetime import datetime
-from vox.flask_app import run_flask_server
-import multiprocessing
-import vox.runner
-
-print("Starting vox application...")
+import sys
 
 
-def init():
+from vox.downloader import YTDLDownloader
+from vox.session import BasicSession
 
-    # write to a log file indicating the that the application is running #
-    while 1:
-        time.sleep(5)
-        print("application running...")
-
-        run_flask_server()
-
-        # # create log file and write
-        # with open("log.txt", "a") as myfile:
-        #     now = datetime.now()
-        #     time_now = now.strftime("%H:%M:%S")
-        #     myfile.write("log application running..." + str(time_now) + "\n")
-
+##
+# def init():
+#     # write to a log file indicating the that the application is running #
+#     while 1:
+#         time.sleep(5)
+#         print("application running...")
+#         run_flask_server()
+#         # # create log file and write
+#         # with open("log.txt", "a") as myfile:
+#         #     now = datetime.now()
+#         #     time_now = now.strftime("%H:%M:%S")
+#         #     myfile.write("log application running..." + str(time_now) + "\n")
+##
 
 if __name__ == "__main__":
-    # p = multiprocessing.Process(target=vox.runner.f, args=("bob",))
-    # p.start()
-    # p.join()
-    from .flask_app import db
 
-    db.create_all()
-    init()
+    # run the session, passing in the  #
+    # from vox.data_entry import db
+    # from flask import Flask
+
+    # app = Flask("something")
+    # # app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///vox.db"
+    # app.register_blueprint(reporting)
+    # db.init_app(app)
+
+    # with app.app_context():
+    #     db.create_all()
+
+    start_session = BasicSession()
+    start_session.run_session()
+
+    # just tread water on this thread #

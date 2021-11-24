@@ -7,7 +7,7 @@
 {% block body %} 
 
 <div class="content">
-    <h1 style="text-align: center"> Track Master </h1>
+    <h1 style="text-align: center"> Track List </h1>
     {% if tracks|length < 1 %}
     <h4 style="text-align: center">There are no tasks. Create one below!</h4>
     {% else %}
@@ -34,9 +34,44 @@
      <div class="form">
         <form actions="/" method="POST">
             <input type="text" name="content" id="content">
-            <input type="submit" value="Add Track" >
+            <input type="submit" value="Add Track" name="sub_type">
         </form>
      </div>
 </div>
+
+
+<div class="content">
+    <h1 style="text-align: center"> PlayLists Tracked </h1>
+    {% if playlists|length < 1 %}
+    <h4 style="text-align: center">There are no playlists. Create one below!</h4>
+    {% else %}
+    <table>
+        <tr>
+            <th> Playlists </th>
+            <th> Added </th>
+            <th> Actions </th>
+        </tr>
+        {% for playlist in playlists %}
+        <tr>
+            <td> {{ playlist.origin_uri}} </td> 
+            <td> {{ playlist.date_created.date() }} </td> 
+            <td> 
+                <a href="/delete/{{playlist.id}}">Delete</a>
+                <br>
+                <a href="/update/{{playlist.id}}">Update</a>
+            </td> 
+        </tr>
+        {% endfor %}
+    </table>
+     {% endif %}
+
+     <div class="form">
+        <form actions="/" method="POST">
+            <input type="text" name="content" id="content">
+            <input type="submit" value="Add Playlist" name="sub_type">
+        </form>
+     </div>
+</div>
+
 
 {% endblock %}

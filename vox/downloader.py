@@ -1,10 +1,13 @@
 from __future__ import unicode_literals
+from abc import ABC
 from re import I
-import ../youtube_dl as yt
 import sys
 import os
+from youtubedl.youtube_dl import YoutubeDL
+import vox.data_entry
 
-# a simpler logger for use in stopping exceptions from halting the operation of the download #
+# # a simpler logger for use in stopping exceptions from halting
+# the operation of the download #
 class MyLogger(object):
     def __init__(self):
         self._message_queue = []
@@ -23,11 +26,14 @@ class MyLogger(object):
         return None if not len(self._message_queue) else self._message_queue.pop()
 
 
-class ArchiveDirectory:
-    #
-    # initialization function
-    #
+class Downloader(ABC):
+    default_download_directory = ""
+
+    # #
     def __init__(self, archive_name="None", archive_master_dir="None"):
+
+        # create a flag that determines whether we want to download to HD, this is default "no"
+        self.download_to_hd = False
 
         # #
         if archive_name == "None":
@@ -50,10 +56,25 @@ class ArchiveDirectory:
             self.full_save_directory + self.archive_name + "_archive_file.txt"
         )
 
-        # logging the errors so that they don't disuprt the flow of the download #
+    def set_from_db(self):
+        pass
+
+    def downloadPlaylist(self, playlist_url):
+        pass
+
+
+class YTDLDownloader(Downloader):
+    #
+    # initialization function
+    #
+    def __init__(self, archive_name="None", archive_master_dir="None"):
+
+        super().__init__()
+
+        # logging the errors so that they don't disrupt the flow of the download #
         loggr = MyLogger()
 
-        # options for the YT downloader #
+        # options for the YT downloader (transfer to JSON file eventually) #
         self.ydl_opts = {
             "outtmpl": self.full_save_directory + "%(title)s.%(ext)s",
             "quiet": True,
@@ -71,7 +92,7 @@ class ArchiveDirectory:
         }
 
         # #
-        self.downloader = yt.YoutubeDL(self.ydl_opts)
+        self.downloader = YoutubeDL({"outtmpl": "%(id)s.%(ext)s"})
 
     #####
     # download Playlists
@@ -84,31 +105,17 @@ class ArchiveDirectory:
         # create the directory if it doesn't exisrt #
         if not os.path.exists(self.full_save_directory):
             os.makedirs(self.full_save_directory)
-        self.downloader.download([playlist_url])
+
+        if self.download_to_hd:
+            self.downloader.download([playlist_url])
 
         # record the information as part of the record #
         info_dict = self.downloader.extract_info(playlist_url, download=False)
+
+        # upload the information to the database #
         return
 
 
-#
-# main test function for early functionality
-#
-def main():
-
-    print("running tests for downloading basics")
-    dl_cmd = ArchiveDirectory()
-    dl_cmd.default_download_directory = "/home/dave/radio_directory"
-    print(dl_cmd.default_download_directory)
-
-    playlist_url_input = (
-        "https://www.youtube.com/playlist?list=PLRbcQXWEJAJqngAmM0LdWJoehr9X6hdQH"
-    )
-    dl_cmd.downloadPlayList(playlist_url=playlist_url_input)
-
-    print("done with function")
-    return
-
-
+# #
 if __name__ == "__main__":
-    main()
+    print("the default function for the downloader class")

@@ -26,6 +26,7 @@ RUN echo "conda activate vox_environment" >> ~/.bashrc
 SHELL ["conda", "run", "-n", "vox_environment", "/bin/bash", "-c"]
 
 RUN pip install --upgrade flask-sqlalchemy
+RUN pip install flask-socketio
 
 # launch the application #
 COPY vox ./vox
@@ -33,5 +34,4 @@ COPY vox ./vox
 # EXPOSE 5000
 
 COPY start_gunicorn.sh .
-#RUN bash start_gunicorn.sh
 ENTRYPOINT ["bash", "/app/start_gunicorn.sh" ]
