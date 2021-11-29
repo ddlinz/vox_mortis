@@ -10,9 +10,7 @@ from vox.downloader import YTDLDownloader
 from flask import Flask, render_template, url_for
 from flask_socketio import SocketIO
 from multiprocessing import Queue, Process, JoinableQueue
-import vox.runner
 from vox.create_app import socketio, create_flask_app
-
 
 # #
 # socketio = SocketIO(app, cors_allowed_origins="*")
