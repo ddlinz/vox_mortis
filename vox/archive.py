@@ -17,19 +17,20 @@ class archiveManager(Manager):
     def __init__(self, app):
 
         from vox.data_entry import db
-        from vox.flask_app import reporting
 
         self.db = db
-        self.db.init_app(app)
-        with app.app_context():
-            self.db.create_all()
 
-        # create the downloader #
-        self.yt_downloader = YTDLDownloader()
-        self.yt_downloader.default_download_directory = "/home/dave/radio_directory"
+        if not app == None:
+            self.db.init_app(app)
+            with app.app_context():
+                self.db.create_all()
 
-        # set the playlists directory that we will use to upload the initial playlists#
-        self.default_playlist_dir = "vox/json/lists.json"
+            # create the downloader #
+            self.yt_downloader = YTDLDownloader()
+            self.yt_downloader.default_download_directory = "/home/dave/radio_directory"
+
+            # set the playlists directory that we will use to upload the initial playlists#
+            self.default_playlist_dir = "vox/json/lists.json"
 
         return
 

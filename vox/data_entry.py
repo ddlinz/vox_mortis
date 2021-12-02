@@ -7,7 +7,6 @@ from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
 
 # #
-# app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///vox.db"
 db = SQLAlchemy()
 
 # #
@@ -22,7 +21,6 @@ class Entry:
 # #
 @dataclass
 class TagEntry(db.Model):
-
     __tablename__: str = "tags"
     id = db.Column(db.Integer, primary_key=True)
     tag_type = db.Column(db.String(50), nullable=True)
@@ -53,7 +51,6 @@ class UserEntry(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), nullable=False)
     email = db.Column(db.String(50), nullable=False)
-
     date_created = db.Column(db.DateTime, default=datetime.utcnow)
 
     def __repr__(self):

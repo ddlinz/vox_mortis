@@ -66,12 +66,45 @@
      {% endif %}
 
      <div class="form">
-        <form actions="/" method="POST">
+        <form id="post_playlist" method="POST" >
+            <input type="text" name="pl_content" id="pl_content" placeholder="Message">
+            <input type="submit" value="Add Playlist" name="sub_type">
+        </form>
+     </div>
+     <div class="form">
+        <form actions="/" method="POST" >
             <input type="text" name="content" id="content">
             <input type="submit" value="Add Playlist" name="sub_type">
         </form>
      </div>
 </div>
 
+
+
+<script>
+            // Socket.IO handlers
+            var socket = null;
+
+            $('#connect').click(function() {
+                if (!socket) {
+                    socket = io();
+                    socket.on('refresh-session', function(data) {
+                        $('#socketio-session').text(data['session']);
+                        $('#socketio-user').text(data['user']);
+                    });
+
+                    $('#connect').text('Disconnect');
+                    $('#socketio').show();
+                }
+                else {
+                    socket.disconnect();
+                    socket = null;
+                    $('#socketio').hide();
+                    $('#connect').text('Connect');
+                    $('#socketio-session').text('');
+                    $('#socketio-user').text('');
+                }
+            });
+</script>
 
 {% endblock %}
