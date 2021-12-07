@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+
+{% block head %} 
+<title> Vox Track Master </title>
+{% endblock %}
+
+{% block body %} 
+
+<div class="content">
+    <h1 style="text-align: center"> Track List </h1>
+    {% if tracks|length < 1 %}
+    <h4 style="text-align: center">There are no tasks. Create one below!</h4>
+    {% else %}
+    <table>
+        <tr>
+            <th> Track </th>
+            <th> Added </th>
+            <th> Actions </th>
+        </tr>
+        {% for track in tracks %}
+        <tr>
+            <td> {{ track.relative_path}} </td> 
+            <td> {{ track.date_created.date() }} </td> 
+            <td> 
+                <a href="/delete_track/{{track.id}}">Delete</a>
+                <br>
+                <a href="/update/{{track.id}}">Update</a>
+            </td> 
+        </tr>
+        {% endfor %}
+    </table>
+     {% endif %}
+
+     <div class="form">
+        <form actions="/" method="POST">
+            <input type="text" name="content" id="content">
+            <input type="submit" value="Add Track" name="sub_type">
+        </form>
+     </div>
+</div>
+
+
+<div class="content">
+    <h1 style="text-align: center"> PlayLists Tracked </h1>
+    {% if playlists|length < 1 %}
+    <h4 style="text-align: center">There are no playlists. Create one below!</h4>
+    {% else %}
+    <table>
+        <tr>
+            <th> Playlists </th>
+            <th> Added </th>
+            <th> Actions </th>
+        </tr>
+        {% for playlist in playlists %}
+        <tr>
+            <td> {{ playlist.origin_uri}} </td> 
+            <td> {{ playlist.date_created.date() }} </td> 
+            <td> 
+                <a href="/delete_playlist/{{playlist.id}}">Delete</a>
+                <br>
+                <a href="/update/{{playlist.id}}">Update</a>
+            </td> 
+        </tr>
+        {% endfor %}
+    </table>
+     {% endif %}
+
+     <div class="form">
+        <form id="post_playlist" method="POST" >
+            <input type="text" name="pl_content" id="pl_content" placeholder="Message">
+            <input type="submit" value="Add Playlist" name="sub_type">
+        </form>
+     </div>
+     <div class="form">
+        <form actions="/" method="POST" >
+            <input type="text" name="content" id="content">
+            <input type="submit" value="Add Playlist" name="sub_type">
+        </form>
+     </div>
+</div>
+
+<script>
+            // Socket.IO handlers
+            var socket = null;
+            $('#connect').click(function() {
+                if (!socket) {
+                    socket = io();
+                    socket.on('refresh-session', function(data) {
+                        $('#socketio-session').text(data['session']);
+                        $('#socketio-user').text(data['user']);
+                    });
+
+                    $('#connect').text('Disconnect');
+                    $('#socketio').show();
+                }
+                else {
+                    socket.disconnect();
+                    socket = null;
+                    $('#socketio').hide();
+                    $('#connect').text('Connect');
+                    $('#socketio-session').text('');
+                    $('#socketio-user').text('');
+                }
+            });
+</script>
+
+{% endblock %}

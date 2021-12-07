@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block head %} 
+<title> Vox Track Master </title>
+{% endblock %}
+
+{% block body %} 
+
+<div class="content">
+    <h1 style="text-align: center"> Update Track </h1>
+    <div class="form">
+        <form action ="/update/{{track.id}}" method = "POST">
+        <input type="text" name="content" id ="content" value="{{track.relative_path}}">
+        <input type="submit" value="Add Track">
+        </form>
+    </div>
+</div>
+
+{% endblock %}

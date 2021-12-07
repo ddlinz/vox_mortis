@@ -10,13 +10,7 @@ services:
           memory: 4G
     environment:
       SET_ENVIRONMENT: DEV
-    networks:
-      - vox-network
+    ports:
+      - "8831:5000"
     stdin_open: true
     tty: true
-
-networks:
-  vox-network:
-    name: vox-network
-    driver: bridge
-    external: true

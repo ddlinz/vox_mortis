@@ -1,0 +1,15 @@
+{
+    "outtmpl": "self.full_save_directory + \"%(title)s.%(ext)s\" ",
+    "quiet": "True",
+    "download_archive": "self.archive_file",
+    "format": "bestaudio/best",
+    "postprocessors": [
+        {
+            "key": "FFmpegExtractAudio",
+            "preferredcodec": "mp3",
+            "preferredquality": "192"
+        }
+    ],
+    "ignoreerrors": "True",
+    "logger": "loggr"
+}

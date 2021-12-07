@@ -1,3 +1,0 @@
-#!/bin/bash
-STRING=$'All models are false, some models are useful, AND HOW' 
-echo $STRING
