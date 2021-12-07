@@ -22,7 +22,7 @@
             <td> {{ track.relative_path}} </td> 
             <td> {{ track.date_created.date() }} </td> 
             <td> 
-                <a href="/delete/{{track.id}}">Delete</a>
+                <a href="/delete_track/{{track.id}}">Delete</a>
                 <br>
                 <a href="/update/{{track.id}}">Update</a>
             </td> 
@@ -56,7 +56,7 @@
             <td> {{ playlist.origin_uri}} </td> 
             <td> {{ playlist.date_created.date() }} </td> 
             <td> 
-                <a href="/delete/{{playlist.id}}">Delete</a>
+                <a href="/delete_playlist/{{playlist.id}}">Delete</a>
                 <br>
                 <a href="/update/{{playlist.id}}">Update</a>
             </td> 
@@ -79,12 +79,9 @@
      </div>
 </div>
 
-
-
 <script>
             // Socket.IO handlers
             var socket = null;
-
             $('#connect').click(function() {
                 if (!socket) {
                     socket = io();

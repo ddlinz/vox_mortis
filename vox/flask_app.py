@@ -67,8 +67,6 @@ def create_flask_app(debug=False):
     central_session.initialize_database_archive(app)
     socketio.init_app(app)
     socketio.run(app)
-    # app.run()
-    # return app
 
 
 @socketio.event
@@ -151,8 +149,8 @@ def index():
         return render_template("index.html", tracks=tracks, playlists=playlists)
 
 
-@reporting.route("/delete/<int:id>")
-def delete(id):
+@reporting.route("/delete_track/<int:id>")
+def delete_track(id):
     track_to_delete = TrackEntry.query.get_or_404(id)
 
     try:
@@ -160,7 +158,24 @@ def delete(id):
         db.session.commit()
         return redirect("/")
     except SystemExit:
-        return "there was an issue with delete operation "
+        return "there was an issue with delete track operation "
+
+
+@reporting.route("/delete_playlist/<int:id>")
+def delete_playlist(id):
+    playlist_to_delete = PlayListEntry.query.get_or_404(id)
+
+    try:
+        db.session.delete(playlist_to_delete)
+        db.session.commit()
+        return redirect("/")
+    except SystemExit:
+        return "there was an issue with delete playlist operation "
+
+
+@reporting.route("/delete/<int:id>")
+def delete_general(id):
+    return redirect("/")
 
 
 # #
