@@ -1,0 +1,8 @@
+{
+    "GroupName": "Initial Playlists",
+    "address": [
+        {"name":"free classical short", "uri":"https://www.youtube.com/playlist?list=PLRbcQXWEJAJodbx1C5kPmevFEivYlVCvZ"},
+        {"name":"free classical large", "uri":"https://youtube.com/playlist?list=PLh5X0e7-mnI0pvqN_x35LPJEzUcZ8zpLx"}
+
+    ]
+}

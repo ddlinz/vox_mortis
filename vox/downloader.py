@@ -106,14 +106,15 @@ class YTDLDownloader(Downloader):
         if not os.path.exists(self.full_save_directory):
             os.makedirs(self.full_save_directory)
 
-        if self.download_to_hd:
-            self.downloader.download([playlist_url])
+        # if self.download_to_hd:
+        #     self.downloader.download([playlist_url])
 
         # record the information as part of the record #
         info_dict = self.downloader.extract_info(playlist_url, download=False)
 
+
         # upload the information to the database #
-        return
+        return info_dict
 
 
 # #
