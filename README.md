@@ -8,3 +8,4 @@ The general outline of the application
 
 The overall prject should be to create a randomized webradio that I can listen to while I work, or that can be turned into a web-radio with comments on any service that allows for media streaming. 
 
+now with two developers
