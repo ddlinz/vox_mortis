@@ -3,10 +3,19 @@ import youtube_dl as yt
 import vlc
 import time
 import os
+from vox.data_entry import ArchiveEntry 
 
 
-# copied this code from t
-class VLC:
+# a player from the code #
+class Player:
+
+    # create a playlist from a directory (pure abstract)
+    def addPlaylistFromDir(self, path):
+        pass
+
+
+# a VLC player that extends from the player class 
+class VLC(Player):
     def __init__(self):
         self.Player = vlc.Instance("--loop")
 
@@ -76,14 +85,14 @@ class MediaPlaylistManager:
         return
 
 
-# main test function for early functionality
-def main():
-    playlist = MediaPlaylistManager()
-    # dl_cmd.downloadPlayList(playlist_url=playlist_url_input)
+# # main test function for early functionality
+# def main():
+#     playlist = MediaPlaylistManager()
+#     # dl_cmd.downloadPlayList(playlist_url=playlist_url_input)
 
-    play_directory = "/home/dave/radio_directory/test/"
-    playlist.PlayAllFromDirectory(play_directory)
+#     play_directory = "/home/dave/radio_directory/test/"
+#     playlist.PlayAllFromDirectory(play_directory)
 
 
-if __name__ == "__main__":
-    main()
+# if __name__ == "__main__":
+#     main()

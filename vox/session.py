@@ -4,6 +4,7 @@ from re import I
 import time
 from vox.archive import archiveManager
 from datetime import datetime
+import vox.playlist_creator
 
 # from youtubedl.youtube_dl import YoutubeDL #
 from vox.downloader import YTDLDownloader
@@ -26,6 +27,9 @@ class BasicVoxSession(GeneralVoxSession):
         self.number_librarian_calls = 0
         self.manager = archiveManager(None)
 
+        self.initial_playlists_to_download = "vox/json/initial_playlists.json"
+
+
     # create the data base manager, this must be done after the flask application is instantiated #
     def initialize_database_archive(self, app):
         self.manager = archiveManager(app)
@@ -44,8 +48,9 @@ class BasicVoxSession(GeneralVoxSession):
     # #
     def run_librarian_process(self):
 
-        #  #
-        self.manager.UploadPlaylistsFromJSONFiles()
+        #     def UploadPlaylistsFromJSONFiles(self, playlist_desc_file, entry_limit =2): #
+        self.manager.UploadPlaylistsFromJSONFiles(playlist_desc_file=self.initial_playlists_to_download, entry_limit =2)
+        self.manager.createArchieEntriesFromTracks()
 
         # while we haven't terminated, keep the librarian process running in the background #
         self.number_librarian_calls = self.number_librarian_calls + 1
@@ -77,6 +82,15 @@ class BasicVoxSession(GeneralVoxSession):
             now = datetime.now()
             time_now = now.strftime("%H:%M:%S")
             myfile.write("log application running..." + str(time_now) + "\n")
+
+
+    # #
+    def stream_track():
+        pass
+
+
+    def play_from_archive():
+        pass
 
     #  #
     def buildDefaultListsFromJSON(self):

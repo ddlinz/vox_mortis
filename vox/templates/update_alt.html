@@ -10,7 +10,7 @@
     <h1 style="text-align: center"> Update Track </h1>
     <div class="form">
         <form action ="/update/{{track.id}}" method = "POST">
-        <input type="text" name="content" id ="content" value="{{track.origin_uri}}">
+        <input type="text" name="content" id ="content" value="{{track.relative_path}}">
         <input type="submit" value="Add Track">
         </form>
     </div>

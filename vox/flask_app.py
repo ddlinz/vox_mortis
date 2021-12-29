@@ -1,10 +1,12 @@
 from flask import Flask, render_template, url_for, request, redirect, session
 from flask_sqlalchemy import SQLAlchemy
 from vox.data_entry import db
-from vox.data_entry import TrackEntry, PlayListEntry
+from vox.data_entry import TrackEntry, PlayListEntry, TrackPlaylistLink
 from flask import Blueprint
 from flask_socketio import SocketIO, emit, join_room, leave_room
 from vox.session import BasicVoxSession
+from sqlalchemy import and_, or_
+
 
 # from multiprocessing import Value
 from multiprocessing import Process
@@ -58,7 +60,6 @@ def run_app_as_process(app):
 def create_flask_app(debug=False):
 
     # start the initial flask application #
-
     app.debug = debug
     app.register_blueprint(reporting)
     # app.config["SECRET_KEY"] = "secret!"
@@ -130,7 +131,7 @@ def index():
 
         elif name_input == "Add Track":
             track_content = request.form["content"]
-            new_track = TrackEntry(relative_path=track_content)
+            new_track = TrackEntry(origin_uri=track_content)
 
             try:
                 db.session.add(new_track)
@@ -173,10 +174,30 @@ def delete_playlist(id):
         return "there was an issue with delete playlist operation "
 
 
+@reporting.route("/view_tacks/<int:id>")
+def view_tacks(id):
+    playlist_to_get_tracks = PlayListEntry.query.get_or_404(id)
+    
+    # tracks = TrackEntry.query.all().
+    tracks = db.session.query(TrackEntry).join(TrackPlaylistLink).filter(TrackPlaylistLink.playlist_id==id).all()
+
+    if request.method == "GET":
+        return render_template("view_tracks.html", tracks=tracks)
+
+
+    # return redirect("/")
+    # return render_template("update.html", tracks=tracks)
+    # try:
+    #     db.session.delete(playlist_to_delete)
+    #     db.session.commit()
+    #     return redirect("/")
+    # except SystemExit:
+    #     return "there was an issue with delete playlist operation "
+
+
 @reporting.route("/delete/<int:id>")
 def delete_general(id):
     return redirect("/")
-
 
 # #
 @reporting.route("/update/<int:id>", methods=["GET", "POST"])
@@ -185,7 +206,7 @@ def update(id):
     track = TrackEntry.query.get_or_404(id)
 
     if request.method == "POST":
-        track.relative_path = request.form["content"]
+        track.origin_uri = request.form["content"]
         try:
             db.session.commit()
             return redirect("/")
@@ -202,7 +223,3 @@ def getPlaylistContents(id):
     if request.method == "GET":
         return render_template("update.html", track=1)
 
-
-@socketio.on("update")
-def update(data):
-    print("Current Value", data["value"])
