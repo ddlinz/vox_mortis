@@ -1,4 +1,4 @@
-from vox.data_entry import PlayListEntry, UserEntry, TrackEntry, TagEntry, TrackPlaylistLink, ArchiveEntry, TrackArchiveLink
+from vox.data_entry import PlayListEntry, UserEntry, TrackEntry, TagEntry, TrackPlaylistLink, ArchiveEntry, TrackArchiveLink,FillInDictionaryWithRequiredFields
 from abc import ABC
 from vox.downloader import YTDLDownloader
 import json
@@ -51,7 +51,7 @@ class archiveManager(Manager):
 
 
     def createArchiveEntryFromInput(self, archive_address, track_id=0, mode="uri", platform="youtube"):
-        print("creating archive object here")
+        # print("creating archive object here")
 
         # #
         new_archive = ArchiveEntry(path=archive_address, archive_type="youtube")
@@ -80,9 +80,12 @@ class archiveManager(Manager):
         # 'acodec', 'abr', 'ext'])
         
         # new_track = TrackEntry(relative_path=data_input['webpage_url'], origin_uri=data_input['webpage_url'],playlist_origin=playlist_id)
-        new_track = TrackEntry(origin_uri=data_input['webpage_url'],playlist_origin=playlist_id)
+        new_track = TrackEntry(origin_uri=data_input['webpage_url'],
+                                playlist_origin=playlist_id,
+                                artist=data_input['artist'],
+                                album=data_input['album'],
+                                title=data_input['title'])
 
-        
         with self.app.app_context():  
 
             # update the track #
@@ -100,7 +103,7 @@ class archiveManager(Manager):
 
             self.createArchiveEntryFromInput(archive_address=updated_track.origin_uri, track_id=updated_track.id)
          
-        print("creating track entry from ")
+        #print("creating track entry from ")
         return updated_track
 
 
@@ -111,6 +114,8 @@ class archiveManager(Manager):
             with open("vox/playlists/dumped_playlist.json", "w") as outfile:
                 json.dump(data, outfile)
 
+        from vox.data_entry import track_template
+        #  #
         new_playlist = PlayListEntry(origin_uri=data['webpage_url'])
 
         #  #
@@ -123,6 +128,7 @@ class archiveManager(Manager):
         #  #
         if not data==None:
             for entry in data['entries'] : 
+                entry = FillInDictionaryWithRequiredFields(entry, track_template)
                 self.createTrackFromFullInput(entry, updated_playlist.id)
 
         return
@@ -131,7 +137,7 @@ class archiveManager(Manager):
     def createPlaylistFromURI(self, uri_input):
         
          # get the data from the downloader # 
-        print("...creating playlist entry from URI")
+        #print("...creating playlist entry from URI")
         data = self.yt_downloader.getPlaylistInfo(uri_input)
 
         self.createPlaylistFromData(data)
@@ -157,10 +163,19 @@ class archiveManager(Manager):
         data['extractor'] = 'vox_hd_entry'
 
         for file in listdir(input):
-            # tag = eyed3.Tag()
             if os.path.isfile((input + "/" + file)) :
-                # audio = eyed3.load((input + "/" + file))
-                pass
+                new_template = track_template.copy()
+                new_template['webpage_url'] = (input + "/" + file)
+                if file.split(".")[1] == "mp3" :
+                    audio_info = eyed3.load(new_template['webpage_url'])
+                    new_template['title'] = audio_info.tag.title
+                    new_template['artist'] = audio_info.tag.artist
+                    new_template['album'] = audio_info.tag.album
+                    new_template['track'] = audio_info.tag.album
+              
+
+                # 
+                data['entries'].append(new_template)
             pass
 
         self.createPlaylistFromData(data)

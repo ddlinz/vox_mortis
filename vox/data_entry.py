@@ -90,6 +90,18 @@ track_template =  {
 	'ext': None
  }
 
+
+
+def FillInDictionaryWithRequiredFields(dict, req_fields):
+
+    for field in req_fields:
+        pass
+        # test to see if the 
+        if not field in dict.keys():
+            dict[field] = None
+
+    return dict
+
 # #
 db = SQLAlchemy()
 
@@ -160,10 +172,14 @@ class TrackEntry(db.Model):
 
     __tablename__ = "track_entry"
     id = db.Column(db.Integer, primary_key=True)
-    # relative_path = db.Column(db.String(200), nullable=False)
+
     origin_uri = db.Column(db.String(200), nullable=True)
     playlist_origin =  db.Column(db.Integer, default=0)
     date_created = db.Column(db.DateTime, default=datetime.utcnow)
+
+    artist = db.Column(db.String(200), nullable=True)
+    album = db.Column(db.String(200), nullable=True)
+    title = db.Column(db.String(200), nullable=True)
 
     def __repr__(self):
         return "<Track %r>" % self.id

@@ -13,19 +13,34 @@
     {% else %}
     <table>
         <tr>
+            <th> Title </th>
+            <th> Artist </th>
+            <th> Album </th>
             <th> Track </th>
             <th> Added </th>
+            <th> Archive </th>
             <th> Actions </th>
+            <th> Action Button </th>
         </tr>
         {% for track in tracks %}
         <tr>
+            <td> {{ track.title }} </td>
+            <td> {{ track.artist}} </td>
+            <td> {{ track.album}} </td>
             <td> {{ track.origin_uri}} </td> 
             <td> {{ track.date_created.date() }} </td> 
+            <td> {{ track.path }} </td>
             <td> 
                 <a href="/delete_track/{{track.id}}">Delete</a>
                 <br>
                 <a href="/update/{{track.id}}">Update</a>
             </td> 
+            <td>
+                <form id="play_track" method="POST" action='#'>
+                    <input type="submit" value="Play Track From Archive">
+                    <input type="track_id" value={{track.id}}>
+                </form>
+            </td>
         </tr>
         {% endfor %}
     </table>

@@ -88,14 +88,17 @@ def my_room_event(message):
         to=message["room"],
     )
 
-
 @socketio.event
 def my_event(message):
     session["receive_count"] = session.get("receive_count", 0) + 1
     emit("my_response", {"data": message["data"], "count": session["receive_count"]})
-
     return redirect("/")
 
+@socketio.event
+def play_event(message):
+    session["receive_count"] = session.get("receive_count", 0) + 1
+    emit("my_response", {"data": message["data"], "count": session["receive_count"]})
+    return redirect("/")
 
 @socketio.event
 def my_playlist_event(message):
@@ -176,10 +179,40 @@ def delete_playlist(id):
 
 @reporting.route("/view_tacks/<int:id>")
 def view_tacks(id):
-    playlist_to_get_tracks = PlayListEntry.query.get_or_404(id)
-    
-    # tracks = TrackEntry.query.all().
-    tracks = db.session.query(TrackEntry).join(TrackPlaylistLink).filter(TrackPlaylistLink.playlist_id==id).all()
+    #playlist_to_get_tracks = PlayListEntry.query.get_or_404(id)
+
+    from vox.data_entry import TrackArchiveLink, ArchiveEntry
+
+    # # #
+    # tracks = (db.session.query(TrackEntry.id, 
+    #                             ArchiveEntry.id,
+    #                             TrackEntry,
+    #                             ArchiveEntry)
+    #                         .join(TrackPlaylistLink)
+    #                         .join(TrackArchiveLink)
+    #                         .join(ArchiveEntry)
+    #                         .filter(TrackPlaylistLink.playlist_id==id)
+    #                         .filter(TrackArchiveLink.track_id == TrackEntry.id)
+    #                         .filter(TrackArchiveLink.track_id == ArchiveEntry.id)
+    #                         .all()
+    #         )
+
+
+
+    tracks = (db.session.query(TrackEntry)
+                            .join(TrackPlaylistLink)
+                            .filter(TrackPlaylistLink.playlist_id==id)
+                            .all()
+            )
+    # tracks = (db.session.query(TrackEntry)
+    #                         .join(TrackPlaylistLink)
+    #                         .join(TrackArchiveLink)
+    #                         .join(ArchiveEntry)
+    #                         .filter(TrackPlaylistLink.playlist_id==id)
+    #                         .filter(TrackArchiveLink.track_id == TrackEntry.id)
+    #                         .filter(TrackArchiveLink.track_id == ArchiveEntry.id)
+    #                         .all()
+    #         )
 
     if request.method == "GET":
         return render_template("view_tracks.html", tracks=tracks)

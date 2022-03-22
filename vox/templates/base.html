@@ -36,14 +36,18 @@
                     window.location = data.url;
                 });
 
-
                 $('form#emit').submit(function(event) {
                     socket.emit('my_event', {data: $('#emit_data').val()});
+                    return false;
+                });                
+                
+                $('form#play_track').submit(function(event) {
+                    socket.emit('play_event', {data: $('#emit_data').val()});
                     return false;
                 });
 
                 $('form#post_playlist').submit(function(event) {
-                    socket.emit('my_playlist_event', {data: $('#pl_content').val()});
+                    socket.emit('my_playlist_event', {data: $('#play_event').val()});
                     return false;
                 });
 
